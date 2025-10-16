@@ -271,6 +271,15 @@ Edit `lib/device-manager.js` for device scanning:
 startAutoScan(interval = 5000);  // Scan interval in ms
 ```
 
+## Known Issues
+
+### Direct Serial MUP1 Communication
+Currently, the pure JavaScript MUP1 protocol implementation sends frames but receives "MUP1 error" from the board. This is being investigated. The frame structure and checksum appear correct based on the MUP1 specification, but the board doesn't accept it.
+
+**Workaround**: Use the official mup1cc tool via Docker wrapper (see `web-server-mup1cc.js` in keti-tsn-ms repository).
+
+**Status**: Under active development. Contributors welcome!
+
 ## Troubleshooting
 
 ### Device Not Detected
