@@ -1,0 +1,33 @@
+{
+  "name": "keti-ct-gui",
+  "version": "1.0.0",
+  "description": "KETI TSN Configuration Tool - Multi-board Management System for Microchip LAN9662",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test/test-protocol.js"
+  },
+  "keywords": [
+    "TSN",
+    "LAN9662",
+    "IEEE 802.1",
+    "CoAP",
+    "MUP1",
+    "YANG",
+    "CORECONF"
+  ],
+  "author": "KETI",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "serialport": "^12.0.0",
+    "cbor-x": "^1.5.4",
+    "yaml": "^2.3.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

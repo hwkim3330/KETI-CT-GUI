@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KETI TSN Configuration Tool</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🔧 KETI TSN Configuration Tool</h1>
+                <p class="subtitle">Multi-Board Management System for Microchip LAN9662</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Connected Devices</span>
+                    <span class="stat-value" id="stat-devices">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Requests</span>
+                    <span class="stat-value" id="stat-requests">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Success Rate</span>
+                    <span class="stat-value" id="stat-success">0%</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar: Device List -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>📡 Devices</h2>
+                    <button class="btn btn-sm btn-primary" id="btn-scan">
+                        <span class="btn-icon">🔍</span> Scan
+                    </button>
+                </div>
+
+                <div class="device-list" id="device-list">
+                    <div class="empty-state">
+                        <p>No devices found</p>
+                        <p class="text-muted">Click "Scan" to search for devices</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Panel: Device Details -->
+            <section class="content-panel">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="overview">Overview</button>
+                    <button class="tab-btn" data-tab="yang">YANG Browser</button>
+                    <button class="tab-btn" data-tab="interfaces">Interfaces</button>
+                    <button class="tab-btn" data-tab="bridge">Bridge</button>
+                    <button class="tab-btn" data-tab="scheduler">TSN Scheduler</button>
+                    <button class="tab-btn" data-tab="console">Console</button>
+                    <button class="tab-btn" data-tab="history">History</button>
+                </div>
+
+                <!-- Tab: Overview -->
+                <div class="tab-content active" id="tab-overview">
+                    <div id="device-info">
+                        <div class="welcome-state">
+                            <h2>Welcome to KETI TSN Configuration Tool</h2>
+                            <p>Select a device from the left panel to get started</p>
+                            <ul class="feature-list">
+                                <li>✅ Multi-board support</li>
+                                <li>✅ Direct MUP1 + CoAP protocol (no Docker)</li>
+                                <li>✅ Full YANG configuration management</li>
+                                <li>✅ TSN (IEEE 802.1) configuration</li>
+                                <li>✅ Real-time monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: YANG Browser -->
+                <div class="tab-content" id="tab-yang">
+                    <div class="panel-header">
+                        <h3>YANG Data Browser</h3>
+                        <button class="btn btn-sm btn-primary" id="btn-refresh-yang">
+                            <span class="btn-icon">🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div class="yang-toolbar">
+                        <input type="text" class="search-input" id="yang-search" placeholder="Search YANG paths...">
+                        <select class="format-select" id="yang-format">
+                            <option value="tree">Tree View</option>
+                            <option value="json">JSON</option>
+                            <option value="yaml">YAML</option>
+                        </select>
+                    </div>
+                    <div class="yang-container" id="yang-container">
+                        <div class="empty-state">
+                            <p>No device selected</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Interfaces -->
+                <div class="tab-content" id="tab-interfaces">
+                    <div class="panel-header">
+                        <h3>Network Interfaces</h3>
+                        <button class="btn btn-sm btn-primary" id="btn-refresh-interfaces">
+                            <span class="btn-icon">🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div id="interfaces-container">
+                        <div class="empty-state">
+                            <p>No device selected</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Bridge -->
+                <div class="tab-content" id="tab-bridge">
+                    <div class="panel-header">
+                        <h3>Bridge Configuration</h3>
+                        <button class="btn btn-sm btn-primary" id="btn-refresh-bridge">
+                            <span class="btn-icon">🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div id="bridge-container">
+                        <div class="empty-state">
+                            <p>No device selected</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: TSN Scheduler -->
+                <div class="tab-content" id="tab-scheduler">
+                    <div class="panel-header">
+                        <h3>TSN Scheduler (IEEE 802.1Qbv/Qav)</h3>
+                        <button class="btn btn-sm btn-primary" id="btn-refresh-scheduler">
+                            <span class="btn-icon">🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div id="scheduler-container">
+                        <div class="empty-state">
+                            <p>No device selected</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Console -->
+                <div class="tab-content" id="tab-console">
+                    <div class="panel-header">
+                        <h3>CoAP Console</h3>
+                        <button class="btn btn-sm btn-danger" id="btn-clear-console">
+                            <span class="btn-icon">🗑️</span> Clear
+                        </button>
+                    </div>
+                    <div class="console-input">
+                        <select class="method-select" id="console-method">
+                            <option value="GET">GET</option>
+                            <option value="PUT">PUT</option>
+                            <option value="POST">POST</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="IPATCH">IPATCH</option>
+                        </select>
+                        <input type="text" class="uri-input" id="console-uri" placeholder="/c?d=a" value="/c?d=a">
+                        <button class="btn btn-primary" id="btn-execute">Execute</button>
+                    </div>
+                    <div class="console-payload">
+                        <label>Payload (JSON):</label>
+                        <textarea id="console-payload" rows="5" placeholder='{"key": "value"}'></textarea>
+                    </div>
+                    <div class="console-output" id="console-output">
+                        <div class="console-welcome">
+                            <p>Enter a CoAP request above and click Execute</p>
+                            <p class="text-muted">Example: GET /c?d=a</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: History -->
+                <div class="tab-content" id="tab-history">
+                    <div class="panel-header">
+                        <h3>Request History</h3>
+                        <button class="btn btn-sm btn-danger" id="btn-clear-history">
+                            <span class="btn-icon">🗑️</span> Clear
+                        </button>
+                    </div>
+                    <div class="history-container" id="history-container">
+                        <div class="empty-state">
+                            <p>No requests yet</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>KETI TSN Configuration Tool v1.0 | MUP1 + CoAP + CORECONF (No Docker) |
+                <a href="https://github.com/hwkim3330/KETI-CT-GUI" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
