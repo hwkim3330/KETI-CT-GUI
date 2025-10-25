@@ -274,18 +274,25 @@ startAutoScan(interval = 5000);  // Scan interval in ms
 ## Known Issues
 
 ### Direct Serial MUP1 Communication
-**FIXED**: The direct JavaScript MUP1 protocol implementation has been replaced with the official `mvdct` CLI tool.
+**FIXED**: The JavaScript MUP1 protocol implementation has been corrected by analyzing the official Ruby implementation from Microchip.
 
-**Solution**: The default server (`server-mvdct.js`) now uses the official Microchip `mvdct` binary for reliable communication. This provides:
-- ✅ 100% compatibility with LAN9662 firmware
-- ✅ Proven stability and reliability
-- ✅ Proper YANG/CBOR encoding
-- ✅ Request caching for better performance
-- ✅ Request queuing to prevent serial port conflicts
+**Root Causes Found:**
+1. ❌ EOF padding was based on escaped frame length instead of original data size
+2. ❌ Checksum was calculated on escaped data instead of raw frame
+3. ❌ Carry folding in checksum didn't match Ruby implementation
 
-**Alternative**: The experimental protocol implementation is still available via `npm run start:proto` for development purposes.
+**Solution Applied:**
+- ✅ EOF padding now based on original data size: `data.length % 2 === 0`
+- ✅ Checksum calculated on un-escaped frame (matching Ruby)
+- ✅ Proper carry folding: fold twice like Ruby implementation
+- ✅ All test cases pass (see `test-mup1.js`)
 
-**Status**: Production ready!
+**Reference Implementation:**
+Based on official Ruby implementation from:
+- https://github.com/microchip-ung/velocitydrivesp-support
+- File: `support/libeasy/handler/mup1.rb`
+
+**Status**: Fixed and tested! Ready for use with real hardware.
 
 ## Troubleshooting
 
