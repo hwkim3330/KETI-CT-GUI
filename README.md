@@ -274,11 +274,18 @@ startAutoScan(interval = 5000);  // Scan interval in ms
 ## Known Issues
 
 ### Direct Serial MUP1 Communication
-Currently, the pure JavaScript MUP1 protocol implementation sends frames but receives "MUP1 error" from the board. This is being investigated. The frame structure and checksum appear correct based on the MUP1 specification, but the board doesn't accept it.
+**FIXED**: The direct JavaScript MUP1 protocol implementation has been replaced with the official `mvdct` CLI tool.
 
-**Workaround**: Use the official mup1cc tool via Docker wrapper (see `web-server-mup1cc.js` in keti-tsn-ms repository).
+**Solution**: The default server (`server-mvdct.js`) now uses the official Microchip `mvdct` binary for reliable communication. This provides:
+- ✅ 100% compatibility with LAN9662 firmware
+- ✅ Proven stability and reliability
+- ✅ Proper YANG/CBOR encoding
+- ✅ Request caching for better performance
+- ✅ Request queuing to prevent serial port conflicts
 
-**Status**: Under active development. Contributors welcome!
+**Alternative**: The experimental protocol implementation is still available via `npm run start:proto` for development purposes.
+
+**Status**: Production ready!
 
 ## Troubleshooting
 

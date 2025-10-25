@@ -31,3 +31,8 @@ build/
 # Temporary files
 tmp/
 temp/
+
+# mvdct binaries (large files - download from keti-tsn-ms or Microchip)
+mvdct.cli
+mvdct.js
+mvdct

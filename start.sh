@@ -57,5 +57,18 @@ echo ""
 echo "🚀 Starting server..."
 echo ""
 
-# Start server
-node server.js
+# Check if mvdct exists
+if [ ! -f "mvdct" ]; then
+    echo "❌ mvdct binary not found!"
+    echo "   Please copy mvdct from keti-tsn-ms:"
+    echo "   cp /home/kim/keti-tsn-ms/mvdct* ."
+    exit 1
+fi
+
+echo "✓ mvdct binary found"
+
+# Make sure mvdct is executable
+chmod +x mvdct mvdct.cli mvdct.js 2>/dev/null
+
+# Start server (mvdct version)
+node server-mvdct.js
