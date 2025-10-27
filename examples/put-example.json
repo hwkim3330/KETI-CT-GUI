@@ -1,0 +1,31 @@
+{
+    "ietf-interfaces:interfaces": {
+        "interface": [
+            {
+                "name": "eth0",
+                "type": "iana-if-type:ethernetCsmacd",
+                "enabled": true,
+                "description": "Primary Ethernet Interface",
+                "ipv4": {
+                    "address": [
+                        {
+                            "ip": "192.168.1.100",
+                            "netmask": "255.255.255.0"
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "eth1",
+                "type": "iana-if-type:ethernetCsmacd",
+                "enabled": false,
+                "description": "Secondary Ethernet Interface"
+            }
+        ]
+    },
+    "ietf-system:system": {
+        "hostname": "my-device",
+        "contact": "admin@example.com",
+        "location": "Server Room 1"
+    }
+}

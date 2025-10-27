@@ -1,0 +1,5 @@
+[
+    {"/ietf-system:system/hostname": "my-device"},
+    {"/ietf-interfaces:interfaces/interface[name=\"eth0\"]/enabled": true},
+    {"/ietf-interfaces:interfaces/interface[name=\"eth0\"]/description": "Primary Ethernet Interface"}
+]

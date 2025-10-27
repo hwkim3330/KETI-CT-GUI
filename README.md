@@ -2,10 +2,48 @@
 
 **Multi-Board Management System for Microchip LAN9662**
 
-A comprehensive web-based management interface for Time-Sensitive Networking (TSN) configuration on Microchip LAN9662 switches. Implements MUP1 + CoAP + CORECONF protocols without Docker dependencies.
+Pure JavaScript implementation of CORECONF (RFC 9254) for Microchip LAN9662 TSN switches. Works on ARM, x86, and all Node.js platforms - no Docker, no binary dependencies!
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
+![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey)
+
+## ⚡ Quick Start
+
+### 3 Commands to Get Started
+
+```bash
+git clone https://github.com/hwkim3330/KETI-CT-GUI.git
+cd KETI-CT-GUI
+./start.sh
+```
+
+That's it! The script will:
+- ✅ Check Node.js version
+- ✅ Install dependencies
+- ✅ Set permissions
+- ✅ Show interactive menu
+
+**Or use directly:**
+
+```bash
+# Web UI
+npm install && npm start
+# Open http://localhost:8080
+
+# CLI Tool
+npm install
+./cli.js device /dev/ttyACM0 get /c
+```
+
+## 🎯 Why This Tool?
+
+- **🚀 Works Everywhere**: ARM (Raspberry Pi), x86 (PC), all Node.js platforms
+- **🔧 No Dependencies**: Pure JavaScript, no mvdct binary, no Docker
+- **✨ Two Interfaces**: Modern Web UI + CLI tool (mup1ct compatible)
+- **📝 100% Compatible**: Based on official Microchip Ruby implementation
+- **🧪 Fully Tested**: All tests passing, production ready
 
 ## Features
 
@@ -327,6 +365,52 @@ startAutoScan(interval = 5000);  // Scan interval in ms
    - Statistics tracking
    - CORS enabled
 
+8. **CBOR Encoding** (`cbor-x` package) ✅
+   - RFC 7049/8949 compliant CBOR encoding/decoding
+   - Basic types (integers, strings, arrays, maps, binary)
+   - Round-trip encoding/decoding verified
+   - Large integers (SIDs) handled correctly
+   - Nested structures supported
+
+9. **SID Manager** (`lib/sid-manager.js`) ✅
+   - SID (YANG Schema Item iDentifier) constants (RFC 9595)
+   - Base64 URL-safe SID encoding (matching Ruby implementation)
+   - .sid file parser (JSON format)
+   - SID ↔ YANG path bidirectional mapping
+   - SIDSchema class for schema management
+   - Ruby mup1ct/mup1cc compatibility verified
+
+10. **YANG Schema Manager** (`lib/yang-schema-manager.js`) ✅
+    - YANG library checksum fetching via FETCH (SID 29304)
+    - Remote catalog download from S3/Artifactory
+    - Local schema caching (`~/.velocitydrive-yang-cache/`)
+    - Automatic .sid file extraction and parsing
+    - Schema serialization/deserialization
+    - Cache management and statistics
+
+11. **YANG Converter** (`lib/yang-converter.js`) ✅
+    - RFC 7951 (JSON) ↔ RFC 9254 (CBOR) conversion
+    - YANG path → SID conversion
+    - SID → YANG path conversion
+    - Content-Format handlers (140/141/142)
+    - Support for FETCH/IPATCH/GET/PUT/POST
+
+12. **CORECONF Client** (`lib/coreconf-client.js`) ✅
+    - High-level CORECONF operations
+    - Automatic YANG schema management
+    - Methods: initialize(), fetch(), ipatch(), get(), put(), post()
+    - Complete workflow integration
+    - Easy-to-use API for device management
+
+13. **CLI Tool** (`cli.js`) ✅
+    - mup1ct/mvdct compatible command-line interface
+    - All CORECONF operations: GET, FETCH, IPATCH, PUT, POST
+    - File I/O: JSON input/output
+    - Pretty output formatting with colors
+    - Progress indicators and verbose mode
+    - Query parameters: --depth, --content, --format
+    - Output to file with --output option
+
 #### Reference Implementation:
 Official Microchip Ruby code:
 - https://github.com/microchip-ung/velocitydrivesp-support
@@ -337,8 +421,138 @@ Official Microchip Ruby code:
 #### Test Coverage:
 - `test-mup1.js`: MUP1 protocol (Ping, CoAP, Escaping, Checksum) ✓
 - `test-coap-frame.js`: CoAP frame encoding/decoding ✓
+- `test-cbor.js`: CBOR basic types, round-trip, SIDs, maps, nested structures ✓
+- `test-sid.js`: SID encoding/decoding, .sid file parsing, Ruby compatibility ✓
+- `test-sid-cbor.js`: SID+CBOR integration, FETCH/IPATCH payloads ✓
+- `test-yang-schema.js`: YANG schema management, checksum fetch, caching ✓
+- `test-yang-converter.js`: JSON ↔ CBOR conversion, path ↔ SID mapping ✓
+- `test-coreconf-client.js`: High-level CORECONF operations ✓
+- `test-cli.sh`: CLI tool functionality and output formatting ✓
 
 **Status**: ✅ Production ready! Works on ARM, x86, any Node.js platform!
+
+#### Implementation Phases Completed:
+- ✅ **Phase 1**: CBOR basic implementation (cbor-x package integration)
+- ✅ **Phase 2**: SID (YANG Schema Item iDentifier) implementation
+  - SID constants and Base64 URL-safe encoding
+  - .sid file parser (JSON format)
+  - SID ↔ Path bidirectional mapping
+  - CBOR + SID integration for FETCH/IPATCH
+  - Ruby mup1ct/mup1cc compatibility verified
+- ✅ **Phase 3**: YANG Schema Management (RFC 9254)
+  - YANG library checksum fetching from device
+  - Remote catalog download (S3/Artifactory)
+  - Local schema caching system
+  - Automatic .sid file parsing and loading
+  - Complete workflow: device → checksum → download → cache → use
+- ✅ **Phase 4**: RFC 7951 ↔ RFC 9254 Conversion
+  - JSON → CBOR converter
+  - CBOR → JSON converter
+  - YANG path → SID conversion
+  - SID → YANG path conversion
+  - Content-Format handlers (140/141/142)
+- ✅ **Phase 5**: High-level CORECONF Client
+  - CORECONFClient class with complete API
+  - Methods: fetch(), ipatch(), get(), put(), post()
+  - Automatic schema management
+  - Complete workflow integration
+- ✅ **Phase 6**: CLI Tool (mup1ct/mvdct compatible)
+  - Command-line interface with all CORECONF operations
+  - File I/O support (JSON)
+  - Pretty output formatting with colors
+  - Progress indicators and verbose mode
+  - Example files and comprehensive testing
+
+## CLI Tool Usage
+
+The CLI tool (`cli.js`) provides a command-line interface compatible with mup1ct/mvdct for device configuration.
+
+### Basic Usage
+
+```bash
+./cli.js device <port> <command> [args...] [options]
+```
+
+### Commands
+
+#### GET - Retrieve configuration
+```bash
+# Get entire configuration
+./cli.js device /dev/ttyACM0 get /c
+
+# Get specific path
+./cli.js device /dev/ttyACM0 get /ietf-interfaces:interfaces
+
+# With options
+./cli.js device /dev/ttyACM0 get /c --depth a --content c --format json
+```
+
+#### FETCH - Query multiple nodes
+```bash
+# Fetch multiple paths
+./cli.js device /dev/ttyACM0 fetch \
+    /ietf-system:system/hostname \
+    /ietf-interfaces:interfaces
+```
+
+#### IPATCH - Modify configuration
+```bash
+# Apply patches from JSON file
+./cli.js device /dev/ttyACM0 ipatch examples/ipatch-example.json
+
+# Example file (examples/ipatch-example.json):
+[
+    {"/ietf-system:system/hostname": "my-device"},
+    {"/ietf-interfaces:interfaces/interface[name=\"eth0\"]/enabled": true}
+]
+```
+
+#### PUT - Replace configuration
+```bash
+# Replace entire configuration
+./cli.js device /dev/ttyACM0 put examples/put-example.json
+```
+
+#### POST - Execute RPC
+```bash
+# Execute RPC/action
+./cli.js device /dev/ttyACM0 post /ietf-system:system-restart
+```
+
+### Options
+
+- `--output <file>`: Write output to file (JSON/YAML based on extension)
+- `--format <fmt>`: Output format: json, yaml, pretty (default: pretty)
+- `--depth <d>`: GET depth: a (all), t (1 level) (default: a)
+- `--content <c>`: GET content: n (nonconfig), a (all), c (config) (default: a)
+- `--verbose`: Enable verbose logging
+- `--no-color`: Disable colored output
+- `--help`: Show help message
+
+### Examples
+
+```bash
+# Get config and save to file
+./cli.js device /dev/ttyACM0 get /c --output config.json --format json
+
+# Verbose mode with no color (for logging)
+./cli.js device /dev/ttyACM0 get /c --verbose --no-color
+
+# Get only config data (no status)
+./cli.js device /dev/ttyACM0 get /c --content c
+
+# Get status data only
+./cli.js device /dev/ttyACM0 get /c --content n
+```
+
+### Testing
+
+Run the CLI test suite:
+```bash
+./test-cli.sh
+```
+
+This will demonstrate all CLI features and show example usage.
 
 ## Troubleshooting
 

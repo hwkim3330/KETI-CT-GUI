@@ -3,25 +3,48 @@
   "version": "1.0.0",
   "description": "KETI TSN Configuration Tool - Multi-board Management System for Microchip LAN9662",
   "type": "module",
-  "main": "server.js",
+  "main": "server-complete.js",
+  "bin": {
+    "keti-ct": "./cli.js"
+  },
   "scripts": {
     "start": "node server-complete.js",
     "start:old": "node server.js",
     "start:mvdct": "node server-mvdct.js",
     "dev": "node --watch server-complete.js",
-    "test": "node test-mup1.js && node test-coap-frame.js"
+    "test": "node test-mup1.js && node test-coap-frame.js && node test-cbor.js && node test-sid.js && node test-sid-cbor.js && node test-yang-schema.js && node test-yang-converter.js && node test-coreconf-client.js",
+    "test:cli": "./test-cli.sh",
+    "test:all": "npm test && npm run test:cli",
+    "cli": "./cli.js"
   },
   "keywords": [
     "TSN",
     "LAN9662",
-    "IEEE 802.1",
+    "Microchip",
+    "IEEE 802.1Qbv",
+    "IEEE 802.1Qav",
     "CoAP",
     "MUP1",
     "YANG",
-    "CORECONF"
+    "CORECONF",
+    "RFC 9254",
+    "RFC 7252",
+    "CBOR",
+    "SID",
+    "VelocityDRIVE",
+    "Network Management",
+    "Time-Sensitive Networking"
   ],
-  "author": "KETI",
+  "author": "KETI (Korea Electronics Technology Institute)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hwkim3330/KETI-CT-GUI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hwkim3330/KETI-CT-GUI/issues"
+  },
+  "homepage": "https://github.com/hwkim3330/KETI-CT-GUI#readme",
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
@@ -30,6 +53,12 @@
     "yaml": "^2.3.4"
   },
   "engines": {
-    "node": ">=18.0.0"
-  }
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ]
 }

@@ -1,74 +1,143 @@
 #!/bin/bash
 
-# KETI TSN Configuration Tool - Startup Script
-
-cd "$(dirname "$0")"
+# KETI-CT-GUI Quick Start Script
 
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║  KETI TSN Configuration Tool - Startup               ║"
+echo "║  KETI-CT-GUI Quick Start                             ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
-# Check Node.js
-if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed!"
-    echo "   Install: sudo apt install nodejs npm"
+# Check Node.js version
+echo "🔍 Checking Node.js version..."
+NODE_VERSION=$(node --version 2>/dev/null)
+if [ $? -ne 0 ]; then
+    echo "❌ Node.js not found. Please install Node.js >= 18.0.0"
     exit 1
 fi
 
-echo "✓ Node.js version: $(node --version)"
+NODE_MAJOR=$(echo $NODE_VERSION | cut -d'.' -f1 | sed 's/v//')
+if [ "$NODE_MAJOR" -lt 18 ]; then
+    echo "❌ Node.js version $NODE_VERSION is too old. Need >= 18.0.0"
+    exit 1
+fi
+echo "✅ Node.js $NODE_VERSION"
 
 # Check npm
-if ! command -v npm &> /dev/null; then
-    echo "❌ npm is not installed!"
+echo ""
+echo "🔍 Checking npm..."
+NPM_VERSION=$(npm --version 2>/dev/null)
+if [ $? -ne 0 ]; then
+    echo "❌ npm not found"
     exit 1
 fi
-
-echo "✓ npm version: $(npm --version)"
+echo "✅ npm $NPM_VERSION"
 
 # Install dependencies if needed
 if [ ! -d "node_modules" ]; then
     echo ""
     echo "📦 Installing dependencies..."
     npm install
+    if [ $? -ne 0 ]; then
+        echo "❌ Failed to install dependencies"
+        exit 1
+    fi
+    echo "✅ Dependencies installed"
 fi
 
-# Check for devices
+# Make scripts executable
 echo ""
-echo "🔍 Checking for connected devices..."
+echo "🔧 Setting up permissions..."
+chmod +x cli.js 2>/dev/null
+chmod +x test-cli.sh 2>/dev/null
+chmod +x start.sh 2>/dev/null
+echo "✅ Permissions set"
+
+# Check serial port
+echo ""
+echo "🔍 Checking serial ports..."
 if ls /dev/ttyACM* 1> /dev/null 2>&1; then
-    echo "✓ Found devices:"
-    ls -la /dev/ttyACM*
+    echo "✅ Serial ports found:"
+    ls -la /dev/ttyACM* 2>/dev/null | awk '{print "   " $0}'
+
+    # Check permissions
+    if [ ! -r /dev/ttyACM0 ] && [ -e /dev/ttyACM0 ]; then
+        echo ""
+        echo "⚠️  Permission issue detected. To fix:"
+        echo "   sudo usermod -a -G dialout $USER"
+        echo "   (Then logout and login)"
+        echo ""
+        echo "   Or temporary fix:"
+        echo "   sudo chmod 666 /dev/ttyACM0"
+    fi
 else
-    echo "⚠️  No /dev/ttyACM* devices found!"
-    echo "   Please connect your LAN9662 board"
+    echo "⚠️  No serial ports found (/dev/ttyACM*)"
+    echo "   Connect your LAN9662 device via USB"
 fi
 
-# Check permissions
+# Show menu
 echo ""
-echo "🔐 Checking serial port permissions..."
-if [ -e "/dev/ttyACM0" ] && [ ! -w "/dev/ttyACM0" ]; then
-    echo "⚠️  No write permission on /dev/ttyACM0"
-    echo "   Fix: sudo chmod 666 /dev/ttyACM*"
-    echo "   Or:  sudo usermod -a -G dialout $USER (then logout/login)"
-fi
-
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║  Choose an option:                                   ║"
+echo "╚══════════════════════════════════════════════════════╝"
 echo ""
-echo "🚀 Starting server..."
+echo "  1) Start Web UI (http://localhost:8080)"
+echo "  2) Run CLI Tool"
+echo "  3) Run Tests"
+echo "  4) Show Help"
+echo "  5) Exit"
 echo ""
+read -p "Enter choice [1-5]: " choice
 
-# Check if mvdct exists
-if [ ! -f "mvdct" ]; then
-    echo "❌ mvdct binary not found!"
-    echo "   Please copy mvdct from keti-tsn-ms:"
-    echo "   cp /home/kim/keti-tsn-ms/mvdct* ."
-    exit 1
-fi
-
-echo "✓ mvdct binary found"
-
-# Make sure mvdct is executable
-chmod +x mvdct mvdct.cli mvdct.js 2>/dev/null
-
-# Start server (mvdct version)
-node server-mvdct.js
+case $choice in
+    1)
+        echo ""
+        echo "🚀 Starting Web UI..."
+        echo "   Open http://localhost:8080 in your browser"
+        echo ""
+        npm start
+        ;;
+    2)
+        echo ""
+        echo "💻 CLI Tool"
+        echo ""
+        ./cli.js --help
+        echo ""
+        echo "Example commands:"
+        echo "  ./cli.js device /dev/ttyACM0 get /c"
+        echo "  ./cli.js device /dev/ttyACM0 fetch /ietf-system:system/hostname"
+        ;;
+    3)
+        echo ""
+        echo "🧪 Running tests..."
+        echo ""
+        npm test && ./test-cli.sh
+        ;;
+    4)
+        echo ""
+        echo "📚 Documentation:"
+        echo "  README.md          - Project overview"
+        echo "  CLI_GUIDE.md       - CLI usage guide"
+        echo "  INSTALL.md         - Installation guide"
+        echo "  ARCHITECTURE.md    - System architecture"
+        echo ""
+        echo "Quick examples:"
+        echo "  # Web UI"
+        echo "  npm start"
+        echo ""
+        echo "  # CLI Tool"
+        echo "  ./cli.js device /dev/ttyACM0 get /c"
+        echo "  ./cli.js device /dev/ttyACM0 fetch /ietf-system:system/hostname"
+        echo "  ./cli.js device /dev/ttyACM0 ipatch examples/ipatch-example.json"
+        echo ""
+        ;;
+    5)
+        echo ""
+        echo "👋 Goodbye!"
+        exit 0
+        ;;
+    *)
+        echo ""
+        echo "❌ Invalid choice. Run ./start.sh again."
+        exit 1
+        ;;
+esac
