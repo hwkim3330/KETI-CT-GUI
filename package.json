@@ -5,10 +5,11 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server-mvdct.js",
-    "start:proto": "node server.js",
-    "dev": "node --watch server-mvdct.js",
-    "test": "node test/test-protocol.js"
+    "start": "node server-complete.js",
+    "start:old": "node server.js",
+    "start:mvdct": "node server-mvdct.js",
+    "dev": "node --watch server-complete.js",
+    "test": "node test-mup1.js && node test-coap-frame.js"
   },
   "keywords": [
     "TSN",
